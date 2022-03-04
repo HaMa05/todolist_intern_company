@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useStore } from "vuex";
 import Home from "@/pages/Home.vue";
 import Login from "@/components/Login.vue";
 import Register from "@/components/Register.vue";
@@ -12,12 +13,6 @@ const routes = [
       name: "home",
       layout: "Default",
       requiresAuth: true,
-    },
-  },
-  {
-    path: "/home",
-    redirect: {
-      name: "home",
     },
   },
   {
@@ -45,13 +40,16 @@ const router = createRouter({
   history: createWebHistory(),
 });
 
-router.beforeEach((to, from) => {
-  if (to.meta.requiresAuth) {
-    return {
-      name: "login",
-      query: "",
-    };
+router.beforeEach(async (to, from, next) => {
+  const token = window.localStorage.getItem("token") || false;
+  if (
+    to.meta.requiresAuth &&
+    !token &&
+    (to.name !== "login" || to.name !== "register")
+  ) {
+    next({ name: "login" });
   }
+  next();
 });
 
 export default router;

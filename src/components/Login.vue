@@ -1,20 +1,27 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
-import { RouterLink } from "vue-router";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 // props
-const infoUser = reactive({ username: "", password: "" });
+const store = useStore();
+const router = useRouter();
+const disableSubmit = ref(false);
+const infoUser = reactive({ email: "", password: "" });
+
+// vuex
+const login = (payload) => store.dispatch("user/login", payload);
 
 // computed
 const isValid = computed(() => {
-  if (infoUser.username && infoUser.password) {
+  if (infoUser.email && infoUser.password) {
     return true;
   } else {
     return false;
   }
 });
 
-const isValidUsername = computed(() => {
+const isValidEmail = computed(() => {
   return false;
 });
 
@@ -22,9 +29,24 @@ const isValidPassword = computed(() => {
   return false;
 });
 // method
-function submitForm() {
-  console.log("Submit form");
-}
+const submitForm = async () => {
+  disableSubmit.value = true;
+  try {
+    await login(infoUser);
+    resetInput();
+    disableSubmit.value = false;
+    router.push("/");
+    console.log("Login Successful");
+  } catch (error) {
+    resetInput();
+    disableSubmit.value = false;
+  }
+};
+
+const resetInput = () => {
+  infoUser.email = "";
+  infoUser.password = "";
+};
 </script>
 
 <template>
@@ -35,17 +57,18 @@ function submitForm() {
     <form @submit.prevent>
       <div class="form flex flex-col gap-y-4">
         <div class="group-form">
-          <label for="username">Tài khoản</label><br />
+          <label for="email">Tài khoản</label><br />
           <input
             type="text"
             id="password"
-            v-model="infoUser.username"
+            v-model="infoUser.email"
             :class="[
               'form-input w-full rounded-lg',
-              isValidUsername ? 'border-red-500' : '',
+              isValidEmail ? 'border-red-500' : '',
             ]"
+            autocomplete="off"
           />
-          <span v-show="isValidUsername" class="text-red-500"
+          <span v-show="isValidEmail" class="text-red-500"
             >Tài khoản không hợp lệ</span
           >
         </div>
@@ -59,6 +82,7 @@ function submitForm() {
               'form-input w-full rounded-lg',
               isValidPassword ? 'border-red-500' : '',
             ]"
+            autocomplete="off"
           />
           <span v-show="isValidPassword" class="text-red-500"
             >Mật khẩu không hợp lệ</span
@@ -75,10 +99,10 @@ function submitForm() {
       <button
         type="submit"
         @click="submitForm"
-        :disabled="!isValid"
+        :disabled="!isValid || disableSubmit"
         :class="[
           'w-full rounded-md bg-blue-400 py-3 text-white shadow-lg',
-          !isValid ? 'disabled:opacity-50' : '',
+          !isValid || disableSubmit ? 'disabled:opacity-50' : '',
         ]"
       >
         Đăng nhập
