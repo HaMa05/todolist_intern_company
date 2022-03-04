@@ -49,6 +49,10 @@ router.beforeEach(async (to, from, next) => {
   ) {
     next({ name: "login" });
   }
+
+  if (token && (to.name === "login" || to.name === "register")) {
+    next({ name: "home" });
+  }
   next();
 });
 

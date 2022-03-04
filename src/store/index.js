@@ -22,5 +22,6 @@ const authStateChange = onAuthStateChanged(auth, (user) => {
 
   authStateChange();
 });
+authStateChange();
 
 export default store;

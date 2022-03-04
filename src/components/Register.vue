@@ -80,7 +80,7 @@ const resetInput = () => {
         <div class="group-form">
           <label for="password">Mật khẩu</label><br />
           <input
-            type="text"
+            type="password"
             id="password"
             v-model="infoUser.password"
             :class="[
@@ -96,7 +96,7 @@ const resetInput = () => {
         <div class="group-form">
           <label for="passwordConfirm">Xác nhận mật khẩu</label><br />
           <input
-            type="text"
+            type="password"
             id="passwordConfirm"
             v-model="infoUser.passwordConfirm"
             :class="[

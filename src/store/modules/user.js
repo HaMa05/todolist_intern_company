@@ -2,7 +2,7 @@ import { auth } from "@/config/firebase/firebase.config";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
+  signOut,
 } from "firebase/auth";
 
 // state
@@ -48,6 +48,15 @@ const actions = {
       })
       .catch((error) => {
         throw new Error("NOT LOGIN", err);
+      });
+  },
+  async logout(_) {
+    await signOut(auth)
+      .then(() => {
+        window.localStorage.removeItem("token");
+      })
+      .catch((error) => {
+        throw new Error("NOT SIGNOUT", err);
       });
   },
 };

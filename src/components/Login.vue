@@ -75,7 +75,7 @@ const resetInput = () => {
         <div class="group-form">
           <label for="password">Mật khẩu</label><br />
           <input
-            type="text"
+            type="password"
             id="password"
             v-model="infoUser.password"
             :class="[
